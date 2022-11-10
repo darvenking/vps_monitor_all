@@ -32,6 +32,7 @@ func handle(siteInfo *db.SiteInfo) {
 		if siteInfo.Stock != b {
 			db.GetSiteInfoDB().Where("id = ?", siteInfo.ID).Update("stock", b)
 		}
+		fmt.Sprintf("%s读取完成:%s", time.Now().Format("2006-01-02"), siteInfo.URL)
 		time.Sleep(30 * time.Second)
 	}
 
