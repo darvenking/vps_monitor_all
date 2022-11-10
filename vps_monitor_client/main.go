@@ -29,9 +29,7 @@ func handle(siteInfo *db.SiteInfo) {
 			return
 		}
 		b := !strings.Contains(result, "out of stock")
-		if siteInfo.Stock != b {
-			db.GetSiteInfoDB().Where("id = ?", siteInfo.ID).Update("stock", b)
-		}
+		db.GetSiteInfoDB().Where("id = ?", siteInfo.ID).Update("stock", b)
 		fmt.Printf("%s更新完成:%s,结果：%s", time.Now().Format("2006-01-02 15:04:05"), siteInfo.URL, b)
 		fmt.Println()
 		time.Sleep(30 * time.Second)
