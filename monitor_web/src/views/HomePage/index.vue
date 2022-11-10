@@ -88,7 +88,7 @@
         <el-form-item label="购买链接" prop="url">
           <el-input v-model="form.url" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="商品名" :prop="productName">
+        <el-form-item label="商品名" prop="productName">
           <el-input v-model="form.productName" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="价格" prop="price">
@@ -195,6 +195,7 @@ export default {
           price: '',
           productName: '',
         };
+        this.subBtnName = '确 定';
         this.dialogFormVisible = false;
       });
     },
