@@ -45,10 +45,10 @@
       </template>
       <template>
         <el-table :data="tableData" style="width: 100%">
-          <el-table-column prop="Name" label="名字" width="180"></el-table-column>
-          <el-table-column prop="URL" label="链接" width="450"></el-table-column>
-          <el-table-column prop="Price" label="价格" width="180"></el-table-column>
-          <el-table-column prop="Stock" label="是否有货">
+          <el-table-column prop="Name" label="名字"></el-table-column>
+          <el-table-column prop="URL" label="链接"></el-table-column>
+          <el-table-column prop="Price" label="价格"></el-table-column>
+          <el-table-column prop="Stock" label="是否有货" width="120">
             <template slot-scope="scope">
               <el-tag
                 :type="scope.row.Stock ? 'success' : 'danger'"
@@ -74,16 +74,6 @@
 
     <el-dialog title="提交商品" :visible.sync="dialogFormVisible" :close-on-click-modal="false">
       <el-form :model="form" :rules="rules" ref="ruleForm" label-width="120px">
-        <el-form-item label="商家名称" prop="name">
-          <el-select v-model="form.name" placeholder="请选商家名称">
-            <el-option
-              v-for="item in sellers"
-              :key="item.ID"
-              :label="item.SellerName"
-              :value="item.SellerName">
-            </el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="购买链接" prop="url">
           <el-input v-model="form.url" autocomplete="off"></el-input>
         </el-form-item>
@@ -134,15 +124,12 @@ export default {
       status: undefined,
       dialogFormVisible: false,
       form: {
-        name: '',
+        name: 'a',
         url: '',
         price: '',
         productName: '',
       },
       rules: {
-        name: [
-          { required: true, message: '请选择商家', trigger: 'blur' },
-        ],
         url: [
           { required: true, message: '请填写购买地址', trigger: 'blur' },
         ],
@@ -189,11 +176,12 @@ export default {
         }
         let res = await SubmitApi(this.form);
         this.form = {
-          name: '',
+          name: 'a',
           url: '',
           price: '',
           productName: '',
         };
+        this.subLoading = false;
         this.subBtnName = '确 定';
         this.dialogFormVisible = false;
       });
