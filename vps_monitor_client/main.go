@@ -10,12 +10,14 @@ import (
 )
 
 func main() {
-
-	var sites []db.SiteInfo
-	db.GetSiteInfoDB().Find(&sites) // 根据整型主键查找
-	for _, item := range sites {
-		item := item
-		go handle(&item)
+	for {
+		var sites []db.SiteInfo
+		db.GetSiteInfoDB().Find(&sites) // 根据整型主键查找
+		for _, item := range sites {
+			item := item
+			go handle(&item)
+		}
+		time.Sleep(30 * time.Second)
 	}
 
 	select {}
@@ -23,18 +25,14 @@ func main() {
 }
 
 func handle(siteInfo *db.SiteInfo) {
-	for {
-		result, err := HttpGet(siteInfo.URL)
-		if err != nil {
-			return
-		}
-		b := !strings.Contains(result, "out of stock")
-		db.GetSiteInfoDB().Where("id = ?", siteInfo.ID).Update("stock", b)
-		fmt.Printf("%s更新完成:%s,结果：%s", time.Now().Format("2006-01-02 15:04:05"), siteInfo.URL, b)
-		fmt.Println()
-		time.Sleep(30 * time.Second)
+	result, err := HttpGet(siteInfo.URL)
+	if err != nil {
+		return
 	}
-
+	b := !strings.Contains(result, "out of stock")
+	db.GetSiteInfoDB().Where("id = ?", siteInfo.ID).Update("stock", b)
+	fmt.Printf("%s更新完成:%s,结果：%s", time.Now().Format("2006-01-02 15:04:05"), siteInfo.URL, b)
+	fmt.Println()
 }
 
 func HttpGet(url string) (result string, err error) {
