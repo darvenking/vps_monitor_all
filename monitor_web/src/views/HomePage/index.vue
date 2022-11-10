@@ -48,7 +48,7 @@
           <el-table-column prop="Name" label="名字" width="180"></el-table-column>
           <el-table-column prop="URL" label="链接" width="450"></el-table-column>
           <el-table-column prop="Price" label="价格" width="180"></el-table-column>
-          <el-table-column prop="Stock" label="是否有货">
+          <el-table-column prop="Stock" label="是否有货" width="180">
             <template slot-scope="scope">
               <el-tag
                 :type="scope.row.Stock ? 'success' : 'danger'"
