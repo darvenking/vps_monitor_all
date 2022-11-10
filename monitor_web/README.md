@@ -1,4 +1,4 @@
-# Vue 2.7 + Vite
+# VPS监控
 > vue2.7 + vue-router3 + pinia
 > 示例代码: https://github.com/klren0312/vite_vue2.7
 > 示例页面: https://klren0312.github.io/vite_vue2.7/
