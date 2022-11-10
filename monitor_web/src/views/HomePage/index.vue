@@ -1,31 +1,35 @@
 <template>
   <div class="home-page">
-    <div class="pro-sell">
-      服务器商家：
-      <el-select v-model="id" placeholder="请选择" @change="changeSell" :clearable="true">
-        <el-option
-          v-for="item in sellers"
-          :key="item.ID"
-          :label="item.SellerName"
-          :value="item.ID">
-        </el-option>
-      </el-select>
-    </div>
+    <div class="table-title">
+      <div class="table-title-left">
+        服务器商家：
+        <el-select v-model="id" placeholder="请选择" @change="changeSell" :clearable="true">
+          <el-option
+            v-for="item in sellers"
+            :key="item.ID"
+            :label="item.SellerName"
+            :value="item.ID">
+          </el-option>
+        </el-select>
 
-    <div class="pro-sell" style="margin: 0 10px">
-      状态：
-      <el-select v-model="status" placeholder="请选择" @change="changeSell" :clearable="true">
-        <el-option
-          v-for="item in statusFilter"
-          :key="item.value"
-          :label="item.name"
-          :value="item.value">
-        </el-option>
-      </el-select>
-      <el-button type="primary" @click="changeSell" :loading="loading" style="margin-left: 10px">{{
-          btnName
-        }}
-      </el-button>
+        状态：
+        <el-select v-model="status" placeholder="请选择" @change="changeSell" :clearable="true">
+          <el-option
+            v-for="item in statusFilter"
+            :key="item.value"
+            :label="item.name"
+            :value="item.value">
+          </el-option>
+        </el-select>
+        <el-button type="primary" @click="changeSell" :loading="loading" style="margin-left: 10px">{{
+            btnName
+          }}
+        </el-button>
+      </div>
+      <div class="table-title-right">
+        <el-button type="primary" @click="()=>{dialogFormVisible = true}" style="margin-right: 10px">提交网址
+        </el-button>
+      </div>
     </div>
 
     <el-skeleton
@@ -68,10 +72,38 @@
         </el-table>
       </template>
     </el-skeleton>
+
+    <el-dialog title="提交商品" :visible.sync="dialogFormVisible" :close-on-click-modal="false">
+      <el-form :model="form" :rules="rules" ref="ruleForm" label-width="120px">
+        <el-form-item label="商家名称" prop="name">
+          <el-select v-model="form.name" placeholder="请选商家名称">
+            <el-option
+              v-for="item in sellers"
+              :key="item.ID"
+              :label="item.SellerName"
+              :value="item.SellerName">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="购买链接" prop="url">
+          <el-input v-model="form.url" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="商品名" :prop="productName">
+          <el-input v-model="form.productName" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="价格" prop="price">
+          <el-input v-model="form.price" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="()=>{dialogFormVisible = false}">取 消</el-button>
+        <el-button type="primary" @click="submit" :loading="subLoading">{{ subBtnName }}</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
-import { GetSellerApi, GetPlistApi } from '@/apis/data.api';
+import { GetPlistApi, GetSellerApi, SubmitApi } from '@/apis/data.api';
 import useCounterStore from '@/store/modules/app';
 import { useRoute } from '@/router';
 import { open_page } from '@/utils/util';
@@ -81,6 +113,8 @@ export default {
     return {
       loading: true,
       btnName: '加载中',
+      subLoading: false,
+      subBtnName: '确 定',
       testNum: 0,
       tableData: [],
       store: useCounterStore(),
@@ -99,6 +133,27 @@ export default {
       ],
       id: undefined,
       status: undefined,
+      dialogFormVisible: false,
+      form: {
+        name: '',
+        url: '',
+        price: '',
+        productName: '',
+      },
+      rules: {
+        name: [
+          { required: true, message: '请选择商家', trigger: 'blur' },
+        ],
+        url: [
+          { required: true, message: '请填写购买地址', trigger: 'blur' },
+        ],
+        price: [
+          { required: true, message: '请填写购买价格', trigger: 'blur' },
+        ],
+        productName: [
+          { required: true, message: '请填写商品名称', trigger: 'blur' },
+        ],
+      },
     };
   },
   mounted() {
@@ -123,8 +178,25 @@ export default {
     changeSell() {
       this.getPlistApi();
     },
-    handleClick(val) {
-      open_page(val.URL);
+    submit() {
+      this.subLoading = true;
+      this.subBtnName = '提交中';
+      this.$refs.ruleForm.validate(async (valid) => {
+        if (!valid) {
+          console.log('error submit!!');
+          this.subLoading = false;
+          this.subBtnName = '确 定';
+          return false;
+        }
+        let res = await SubmitApi(this.form);
+        this.form = {
+          name: '',
+          url: '',
+          price: '',
+          productName: '',
+        };
+        this.dialogFormVisible = false;
+      });
     },
   },
   components: {},
@@ -136,9 +208,13 @@ export default {
     color: v-bind(textColor);
   }
 
-  .pro-sell {
-    display: inline-block;
+  .table-title {
+    display: flex;
     margin: 20px 0;
+
+    .table-title-right {
+      margin-left: auto;
+    }
   }
 }
 </style>

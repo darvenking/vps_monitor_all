@@ -16,6 +16,7 @@ func route(ctx context.Context, parser *gcmd.Parser) error {
 		group.POST("/login", controller.Login)
 		group.GET("/seller", controller.SellerList)
 		group.POST("/plist", controller.Plist)
+		group.POST("/submit", controller.Submit)
 	})
 
 	s.Group("/", func(group *ghttp.RouterGroup) {
