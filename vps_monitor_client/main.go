@@ -33,6 +33,7 @@ func handle(siteInfo *db.SiteInfo) {
 			db.GetSiteInfoDB().Where("id = ?", siteInfo.ID).Update("stock", b)
 		}
 		fmt.Printf("%s更新完成:%s,结果：%s", time.Now().Format("2006-01-02 15:04:05"), siteInfo.URL, b)
+		fmt.Println()
 		time.Sleep(30 * time.Second)
 	}
 
@@ -53,7 +54,6 @@ func HttpGet(url string) (result string, err error) {
 	for {
 		n, err2 := resp.Body.Read(buf)
 		if n == 0 {
-			fmt.Println("读取完成")
 			break
 		}
 		if err2 != nil && err2 != io.EOF {
