@@ -28,7 +28,10 @@ func handle(siteInfo *db.SiteInfo) {
 		if err != nil {
 			return
 		}
-		db.GetSiteInfoDB().Where("id = ?", siteInfo.ID).Update("stock", !strings.Contains(result, "out of stock"))
+		b := !strings.Contains(result, "out of stock")
+		if siteInfo.Stock != b {
+			db.GetSiteInfoDB().Where("id = ?", siteInfo.ID).Update("stock", b)
+		}
 		time.Sleep(30 * time.Second)
 	}
 
