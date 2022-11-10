@@ -12,7 +12,7 @@ import (
 func main() {
 
 	var sites []db.SiteInfo
-	db.SiteInfoDB.Find(&sites) // 根据整型主键查找
+	db.GetSiteInfoDB().Find(&sites) // 根据整型主键查找
 	for _, item := range sites {
 		item := item
 		go handle(&item)
@@ -28,8 +28,8 @@ func handle(siteInfo *db.SiteInfo) {
 		if err != nil {
 			return
 		}
-		db.SiteInfoDB.Update("stock", !strings.Contains(result, "out of stock"))
-		time.Sleep((10 * 10) * time.Millisecond)
+		db.GetSiteInfoDB().Where("id = ?", siteInfo.ID).Update("stock", !strings.Contains(result, "out of stock"))
+		time.Sleep(30 * time.Second)
 	}
 
 }

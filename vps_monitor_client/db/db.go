@@ -5,7 +5,8 @@ package db
 */
 
 import (
-	"gorm.io/driver/sqlite"
+	"fmt"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
@@ -14,9 +15,16 @@ var (
 )
 
 func GetDB() *gorm.DB {
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	host := "127.0.0.1"
+	user := "uname"
+	password := "zhenxun"
+	dbname := "testdb"
+	port := "5432"
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Shanghai", host, user, password, dbname, port)
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
+	println("数据连接初始化完成")
 	return db
 }

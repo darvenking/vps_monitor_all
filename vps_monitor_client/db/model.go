@@ -12,11 +12,16 @@ func init() {
 	}
 }
 
-var SiteInfoDB = DB.Model(&SiteInfo{})
+func GetSiteInfoDB() *gorm.DB {
+	return DB.Model(&SiteInfo{})
+}
 
 type SiteInfo struct {
 	gorm.Model
-	Stock bool
-	URL   string
-	Name  string
+	Stock    bool
+	URL      string
+	Name     string
+	Price    string
+	Status   int `gorm:"default:1"`
+	SellerId uint
 }
