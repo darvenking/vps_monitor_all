@@ -18,10 +18,11 @@ func GetSiteInfoDB() *gorm.DB {
 
 type SiteInfo struct {
 	gorm.Model
-	Stock    bool
-	URL      string
-	Name     string
-	Price    string
-	Status   int `gorm:"default:1"`
-	SellerId uint
+	Stock       bool
+	NoStockFlag string
+	URL         string
+	Name        string
+	Price       string
+	Status      int `gorm:"default:1"`
+	SellerId    uint
 }
