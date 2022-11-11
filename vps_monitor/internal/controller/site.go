@@ -45,6 +45,6 @@ func Plist(r *ghttp.Request) {
 	if stock != 0 {
 		siteInfoDB.Where("stock = ?", stock == 2)
 	}
-	siteInfoDB.Find(&list)
+	siteInfoDB.Order("stock desc").Order("id desc").Find(&list)
 	res.Success(r, list)
 }
