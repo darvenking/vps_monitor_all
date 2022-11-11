@@ -16,10 +16,15 @@ var (
 
 func GetDB() *gorm.DB {
 	host := "127.0.0.1"
-	user := "uname"
-	password := "zhenxun"
-	dbname := "testdb"
 	port := "5432"
+	//user := "uname"
+	//password := "zhenxun"
+	//dbname := "testdb"
+
+	user := "postgres"
+	password := "bgy123456"
+	dbname := "monitor"
+
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Shanghai", host, user, password, dbname, port)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
