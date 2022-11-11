@@ -44,6 +44,7 @@ func handleUrl() {
 					}
 				}
 				db.GetSiteInfoDB().Save(siteInfo)
+				log.Printf("id: %d,url: 【%s】 --> 自动处理完成\n", item.ID, item.URL)
 			}
 		}
 		time.Sleep(300 * time.Second)
