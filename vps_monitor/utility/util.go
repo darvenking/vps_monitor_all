@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"unsafe"
 )
 
 func HttpGet(url string) (result string, err error) {
@@ -32,4 +33,14 @@ func HttpGet(url string) (result string, err error) {
 		result += string(buf[:n])
 	}
 	return
+}
+
+func String2bytes(s string) []byte {
+	tmp1 := (*[2]uintptr)(unsafe.Pointer(&s))
+	tmp2 := [3]uintptr{tmp1[0], tmp1[1], tmp1[1]}
+	return *(*[]byte)(unsafe.Pointer(&tmp2))
+}
+
+func Bytes2string(bytes []byte) string {
+	return *(*string)(unsafe.Pointer(&bytes))
 }

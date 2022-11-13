@@ -22,7 +22,7 @@ func route(ctx context.Context, parser *gcmd.Parser) error {
 	s.Group("/", func(group *ghttp.RouterGroup) {
 		group.Middleware(service.Middleware().Auth)
 		group.POST("/logout", controller.Logout)
-		group.POST("/add", controller.Add)
+		group.POST("/audit", controller.Audit)
 
 	})
 	s.Run()

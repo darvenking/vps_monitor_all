@@ -4,20 +4,6 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetSiteInfoDB() *gorm.DB {
-	return DB.Model(&SiteInfo{})
-}
-
-type SiteInfo struct {
-	gorm.Model
-	Stock    bool
-	URL      string
-	Name     string
-	Price    string
-	Status   int `gorm:"default:1"`
-	SellerId uint
-}
-
 func GetUserInfoDB() *gorm.DB {
 	return DB.Model(&UserInfo{})
 }
@@ -38,4 +24,44 @@ type SellerInfo struct {
 	SellerName  string
 	Description string
 	Status      int `gorm:"default:1"`
+}
+
+func GetSubmitSiteDB() *gorm.DB {
+	return DB.Model(&SiteConfig{})
+}
+
+type SubmitSite struct {
+	gorm.Model
+	URL string
+	//处理状态，1未处理 2已处理
+	Status int `gorm:"default:1"`
+}
+
+func GetSiteConfigDB() *gorm.DB {
+	return DB.Model(&SiteConfig{})
+}
+
+type SiteConfig struct {
+	gorm.Model
+	URL         string
+	NoStockFlag string
+	NameFlag    string
+	PriceFlag   string
+	Cookies     string
+}
+
+func GetSiteInfoDB() *gorm.DB {
+	return DB.Model(&SiteInfo{})
+}
+
+type SiteInfo struct {
+	gorm.Model
+	Stock       bool
+	NoStockFlag string
+	URL         string
+	Name        string
+	Price       string
+	Status      int `gorm:"default:1"`
+	SellerId    uint
+	ConfigId    uint
 }

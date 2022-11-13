@@ -18,12 +18,12 @@ func main() {
 
 func handleUrl() {
 	for {
-		var sites []db.SitePre
-		db.GetSitePreDB().Where("status = ?", 2).Find(&sites)
+		var sites []db.SiteConfig
+		db.GetSiteConfigDB().Where("status = ?", 2).Find(&sites)
 		for _, item := range sites {
 			item := item
 			//更新为已处理
-			db.GetSitePreDB().Where("id = ?", item.ID).Update("status", 3)
+			db.GetSiteConfigDB().Where("id = ?", item.ID).Update("status", 2)
 			//处理网站内容
 			if util.CheckUrl(item.URL) {
 				siteInfo, err := util.GetSiteInfo(&item)
@@ -64,7 +64,7 @@ func handleSite() {
 }
 
 func handle(siteInfo *db.SiteInfo) {
-	result, err := util.HttpGet(siteInfo.URL)
+	result, err := util.GetWebHtml(siteInfo.URL)
 	if err != nil {
 		return
 	}

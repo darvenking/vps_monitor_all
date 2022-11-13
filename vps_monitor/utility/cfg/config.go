@@ -31,6 +31,6 @@ func Get(key string) interface{} {
 	return config.Get(key)
 }
 
-func GetStr(key string) interface{} {
+func GetStr(key string) string {
 	return config.GetString(key)
 }

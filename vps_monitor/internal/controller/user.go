@@ -15,7 +15,3 @@ func Logout(r *ghttp.Request) {
 	service.Auth().LogoutHandler(r.GetCtx())
 	res.Success(r, "")
 }
-
-func Test(r *ghttp.Request) {
-	res.Success(r, "test"+r.Get("userId").String())
-}

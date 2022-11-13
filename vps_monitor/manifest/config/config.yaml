@@ -25,13 +25,6 @@ logger:
   stdout: true
   stdoutColorDisabled: true
 
-gfcli:
-  build:
-    name:     "gf"
-    arch:     "all"
-    system:   "all"
-    mod:      "none"
-    packSrc:  "resource,manifest"
-    version:  "v1.0.0"
-    output:   "./bin"
-    extra:    ""
+# 登录token信息加密字符串，必须修改！！！！！！！！！！！！！
+jwt:
+  secret: "oiewhfoirtgbisaugqwe"

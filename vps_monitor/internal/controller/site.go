@@ -5,10 +5,11 @@ import (
 	"github.com/gogf/gf/v2/frame/gins"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"vps_monitor/internal/model"
+	"vps_monitor/internal/param"
 	"vps_monitor/utility/res"
 )
 
-func Submit(r *ghttp.Request) {
+func Test(r *ghttp.Request) {
 	msg := "商家：" + r.Get("name").String() + "\nUrl：" + r.Get("url").String() + "\n价格：" + r.Get("price").String() + "\n商品名：" + r.Get("productName").String()
 
 	param := gmap.HashMap{}
@@ -25,12 +26,32 @@ func Submit(r *ghttp.Request) {
 	res.Success(r, "ok")
 }
 
-func Add(r *ghttp.Request) {
-	info := &model.SiteInfo{
-		URL:  r.Get("url").String(),
-		Name: r.Get("name").String(),
+// Submit 提交网址
+func Submit(r *ghttp.Request) {
+	info := &model.SubmitSite{
+		URL: r.Get("url").String(),
 	}
-	model.GetSiteInfoDB().Save(info)
+	model.GetSubmitSiteDB().Save(info)
+	res.Success(r, "ok")
+}
+
+// Audit 审核
+func Audit(r *ghttp.Request) {
+	var p param.AuditSite
+	err := r.Parse(&p)
+	if err != nil {
+		res.Fail(r, "ok")
+	}
+	var sub model.SubmitSite
+	model.GetSubmitSiteDB().Where("id = ?", p.Id).First(&sub)
+	m := &model.SiteConfig{
+		URL:         sub.URL,
+		NoStockFlag: p.NoStockFlag,
+		PriceFlag:   p.PriceFlag,
+		NameFlag:    p.NameFlag,
+		Cookies:     p.Cookies,
+	}
+	model.GetSubmitSiteDB().Save(m)
 	res.Success(r, "ok")
 }
 

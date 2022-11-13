@@ -8,6 +8,7 @@ import (
 	"time"
 	"vps_monitor/internal/model"
 	"vps_monitor/internal/param"
+	"vps_monitor/utility/cfg"
 	"vps_monitor/utility/res"
 )
 
@@ -20,7 +21,7 @@ func Auth() *jwt.GfJWTMiddleware {
 func init() {
 	auth := jwt.New(&jwt.GfJWTMiddleware{
 		Realm:           "auth zone",
-		Key:             []byte("secret key"),
+		Key:             []byte(cfg.GetStr("jwt.secret")),
 		Timeout:         time.Minute * 30,
 		MaxRefresh:      time.Minute * 5,
 		IdentityKey:     "userId",
