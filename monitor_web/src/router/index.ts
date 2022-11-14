@@ -23,7 +23,18 @@ export const constantRoutes = [
         },
         component: () =>
           import(
-            '/@/views/HomePage/index.vue'
+            '@/views/HomePage/index.vue'
+            ),
+      },
+      {
+        path: '/audit',
+        name: 'AuditPage',
+        meta: {
+          title: '审核',
+        },
+        component: () =>
+          import(
+            '@/views/HomePage/audit.vue'
             ),
       },
     ],

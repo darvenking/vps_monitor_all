@@ -16,6 +16,7 @@ declare module '@vue/runtime-core' {
     ElMenuItem: typeof import('element-ui/lib/menu-item')['default']
     ElMenuItemGroup: typeof import('element-ui/lib/menu-item-group')['default']
     ElOption: typeof import('element-ui/lib/option')['default']
+    ElPagination: typeof import('element-ui/lib/pagination')['default']
     ElSelect: typeof import('element-ui/lib/select')['default']
     ElSkeleton: typeof import('element-ui/lib/skeleton')['default']
     ElSkeletonItem: typeof import('element-ui/lib/skeleton-item')['default']

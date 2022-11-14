@@ -20,8 +20,10 @@ func route(ctx context.Context, parser *gcmd.Parser) error {
 	})
 
 	s.Group("/", func(group *ghttp.RouterGroup) {
-		group.Middleware(service.Middleware().Auth)
+		//group.Middleware(service.Middleware().Auth)
+		group.Middleware(service.MiddlewareInstance().SimpleAuthenticator)
 		group.POST("/logout", controller.Logout)
+		group.POST("/audit-list", controller.AuditList)
 		group.POST("/audit", controller.Audit)
 
 	})

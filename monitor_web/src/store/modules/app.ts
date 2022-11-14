@@ -1,19 +1,18 @@
-import { defineStore } from 'pinia'
+import {defineStore} from 'pinia'
 
 const useAppStore = defineStore({
   id: 'app',
   state: () => ({
-    isOk: true,
-    testNum: 1,
+    token: '',
   }),
   getters: {
-    getIsOk(): boolean {
-      return this.isOk
+    getToken(): string {
+      return this.token
     },
   },
   actions: {
-    setIsOk(isOk: boolean) {
-      this.isOk = isOk
+    setToken(token: string) {
+      this.token = token
     },
   },
 })

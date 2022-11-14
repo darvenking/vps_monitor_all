@@ -48,6 +48,8 @@ type SiteConfig struct {
 	NameFlag    string
 	PriceFlag   string
 	Cookies     string
+	//处理状态，1待爬虫处理，3爬虫已处理完毕
+	Status int `gorm:"default:1"`
 }
 
 func GetSiteInfoDB() *gorm.DB {
