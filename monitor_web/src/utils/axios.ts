@@ -1,14 +1,14 @@
-import axios, { ResponseType } from 'axios'
-import { NoticeType } from 'types/axios'
+import axios, {ResponseType} from 'axios'
+import {NoticeType} from 'types/axios'
 import Notification from 'element-ui/lib/notification'
-
 
 //配置公共的请求头
 axios.defaults.baseURL = '/api'
 // 配置超时时间
 axios.defaults.timeout = 3000;
 // 配置公共请求头
-axios.defaults.headers.common['Authorization'] = "123";
+// @ts-ignore
+axios.defaults.headers.common['secret'] = localStorage.getItem('secret');
 //配置公共的post的Content-Type
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 

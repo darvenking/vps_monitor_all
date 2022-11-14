@@ -36,8 +36,8 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { computed } from 'vue'
-import { useRoute, constantRoutes } from '@/router'
+import {computed} from 'vue'
+import {constantRoutes, useRoute} from '@/router'
 
 const onRoutes = computed(() => {
   return useRoute().path
@@ -47,6 +47,10 @@ const onRoutes = computed(() => {
 .side-bar {
   .el-menu {
     height: 100%;
+  }
+
+  .el-menu-item {
+    min-width: 149px !important;
   }
 }
 </style>

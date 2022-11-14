@@ -20,8 +20,8 @@ func main() {
 
 	// 每30秒执行一次
 	s.Every(30).Second().Do(func() {
-		go handleUrl()
-		go handleSite()
+		go handleSiteConfig()
+		go crawlStock()
 	})
 	s.StartBlocking()
 }
@@ -29,7 +29,7 @@ func main() {
 // 加锁 防止在规定时间未执行完又重复执行
 var handleUrlTaskRunningLock sync.Mutex
 
-func handleUrl() {
+func handleSiteConfig() {
 	if handleUrlTaskRunningLock.TryLock() {
 		handleUrlTaskRunningLock.Lock()
 		var sites []db.SiteConfig
@@ -48,13 +48,14 @@ func handleUrl() {
 				u, err := url.Parse(item.URL)
 				if err != nil {
 					log.Printf("url: 【%s】 --> 自动识别商家失败\n", item.URL)
-				}
-				var sellers []db.SellerInfo
-				db.GetSellerInfoDB().Where("status = ?", 1).Find(&sellers)
-				for _, v := range sellers {
-					if strings.Contains(u.Host, v.SellerName) {
-						siteInfo.SellerId = v.ID
-						break
+				} else {
+					var sellers []db.SellerInfo
+					db.GetSellerInfoDB().Where("status = ?", 1).Find(&sellers)
+					for _, v := range sellers {
+						if strings.Contains(u.Host, v.SellerName) {
+							siteInfo.SellerId = v.ID
+							break
+						}
 					}
 				}
 				db.GetSiteInfoDB().Save(siteInfo)
@@ -68,7 +69,7 @@ func handleUrl() {
 
 var handleSiteTaskRunningLock sync.Mutex
 
-func handleSite() {
+func crawlStock() {
 	if handleSiteTaskRunningLock.TryLock() {
 		handleSiteTaskRunningLock.Lock()
 		var sites []db.SiteInfo
@@ -96,6 +97,6 @@ func handle(siteInfo *db.SiteInfo) {
 		res = !strings.Contains(result, siteInfo.NoStockFlag)
 	}
 	db.GetSiteInfoDB().Where("id = ?", siteInfo.ID).Update("stock", res)
-	fmt.Printf("%s更新完成:%s,结果：%s", time.Now().Format("2006-01-02 15:04:05"), siteInfo.URL, res)
+	fmt.Printf("%s更新完成:%s,结果：%t", time.Now().Format("2006-01-02 15:04:05"), siteInfo.URL, res)
 	fmt.Println()
 }

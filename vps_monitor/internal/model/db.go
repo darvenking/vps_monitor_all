@@ -19,7 +19,7 @@ var (
 
 func init() {
 	// 迁移 schema
-	err := DB.AutoMigrate(&SiteInfo{}, &UserInfo{}, &SellerInfo{})
+	err := DB.AutoMigrate(&SiteInfo{}, &UserInfo{}, &SellerInfo{}, &SubmitSite{}, &SiteConfig{})
 	if err != nil {
 		panic("数据库迁移失败！")
 	}

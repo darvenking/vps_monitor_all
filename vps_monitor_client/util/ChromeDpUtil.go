@@ -47,11 +47,11 @@ func GetWebHtml(url string) (string, error) {
 	return htmlContent, nil
 }
 
-// ChromeCtx 使用一个实例
-var ChromeCtx context.Context
+// chromeCtx 使用一个实例
+var chromeCtx context.Context
 
 func GetChromeCtx(focus bool) context.Context {
-	if ChromeCtx == nil || focus {
+	if chromeCtx == nil || focus {
 		//初始化参数，先传一个空的数据
 		allocOpts := chromedp.DefaultExecAllocatorOptions[:]
 		allocOpts = append(allocOpts,
@@ -68,12 +68,12 @@ func GetChromeCtx(focus bool) context.Context {
 		} else {
 			c, _ = chromedp.NewExecAllocator(context.Background(), allocOpts...)
 		}
-		ChromeCtx, _ = chromedp.NewContext(c, chromedp.WithLogf(log.Printf))
+		chromeCtx, _ = chromedp.NewContext(c, chromedp.WithLogf(log.Printf))
 		// 执行一个空task, 用提前创建Chrome实例
-		chromedp.Run(ChromeCtx, make([]chromedp.Action, 0, 1)...)
+		chromedp.Run(chromeCtx, make([]chromedp.Action, 0, 1)...)
 	}
 
-	return ChromeCtx
+	return chromeCtx
 }
 
 // 检查是否有9222端口，来判断是否运行在linux上

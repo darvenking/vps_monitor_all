@@ -11,3 +11,11 @@ export function GetPlistApi(param) {
 export function SubmitApi(param) {
   return post('/submit', param);
 }
+
+export function AuditList(param) {
+  return post('/audit-list', param);
+}
+
+export function Audit(param) {
+  return post('/audit', param);
+}

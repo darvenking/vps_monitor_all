@@ -22,7 +22,7 @@ func GetDB() *gorm.DB {
 	//dbname := "testdb"
 
 	user := "postgres"
-	password := "postgres"
+	password := "bgy123456"
 	dbname := "monitor"
 
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Shanghai", host, user, password, dbname, port)

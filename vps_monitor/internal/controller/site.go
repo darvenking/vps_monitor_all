@@ -5,7 +5,6 @@ import (
 	"github.com/gogf/gf/v2/frame/gins"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"vps_monitor/internal/model"
-	"vps_monitor/internal/param"
 	"vps_monitor/utility/res"
 )
 
@@ -32,26 +31,6 @@ func Submit(r *ghttp.Request) {
 		URL: r.Get("url").String(),
 	}
 	model.GetSubmitSiteDB().Save(info)
-	res.Success(r, "ok")
-}
-
-// Audit 审核
-func Audit(r *ghttp.Request) {
-	var p param.AuditSite
-	err := r.Parse(&p)
-	if err != nil {
-		res.Fail(r, "ok")
-	}
-	var sub model.SubmitSite
-	model.GetSubmitSiteDB().Where("id = ?", p.Id).First(&sub)
-	m := &model.SiteConfig{
-		URL:         sub.URL,
-		NoStockFlag: p.NoStockFlag,
-		PriceFlag:   p.PriceFlag,
-		NameFlag:    p.NameFlag,
-		Cookies:     p.Cookies,
-	}
-	model.GetSubmitSiteDB().Save(m)
 	res.Success(r, "ok")
 }
 
