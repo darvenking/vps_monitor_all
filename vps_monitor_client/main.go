@@ -16,14 +16,18 @@ func main() {
 
 	//timezone, _ := time.LoadLocation("Asia/Shanghai")
 	//s := gocron.NewScheduler(timezone)
-	s := gocron.NewScheduler(time.UTC)
+	schedule := gocron.NewScheduler(time.UTC)
 
 	// 每30秒执行一次
-	s.Every(30).Second().Do(func() {
+	_, err := schedule.Every(30).Second().Do(func() {
 		go handleSiteConfig()
 		go crawlStock()
 	})
-	s.StartBlocking()
+	if err != nil {
+		log.Println("定时任务启动失败...")
+		return
+	}
+	schedule.StartBlocking()
 }
 
 // 加锁 防止在规定时间未执行完又重复执行
