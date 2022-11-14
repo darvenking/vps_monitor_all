@@ -76,14 +76,14 @@ func crawlStock() {
 		db.GetSiteInfoDB().Find(&sites) // 根据整型主键查找
 		for _, item := range sites {
 			item := item
-			go handle(&item)
+			go crawlStockHandle(&item)
 		}
 		time.Sleep(30 * time.Second)
 		handleUrlTaskRunningLock.Unlock()
 	}
 }
 
-func handle(siteInfo *db.SiteInfo) {
+func crawlStockHandle(siteInfo *db.SiteInfo) {
 	result, err := util.GetWebHtml(siteInfo.URL)
 	if err != nil {
 		return
