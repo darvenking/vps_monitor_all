@@ -2,22 +2,36 @@ package main
 
 import (
 	"fmt"
+	"github.com/go-co-op/gocron"
 	"log"
 	"net/url"
 	"strings"
+	"sync"
 	"time"
 	"vps_monitor_client/db"
 	"vps_monitor_client/util"
 )
 
 func main() {
-	go handleUrl()
-	go handleSite()
-	select {}
+
+	//timezone, _ := time.LoadLocation("Asia/Shanghai")
+	//s := gocron.NewScheduler(timezone)
+	s := gocron.NewScheduler(time.UTC)
+
+	// 每30秒执行一次
+	s.Every(30).Second().Do(func() {
+		go handleUrl()
+		go handleSite()
+	})
+	s.StartBlocking()
 }
 
+// 加锁 防止在规定时间未执行完又重复执行
+var handleUrlTaskRunningLock sync.Mutex
+
 func handleUrl() {
-	for {
+	if handleUrlTaskRunningLock.TryLock() {
+		handleUrlTaskRunningLock.Lock()
 		var sites []db.SiteConfig
 		db.GetSiteConfigDB().Where("status = ?", 2).Find(&sites)
 		for _, item := range sites {
@@ -47,12 +61,16 @@ func handleUrl() {
 				log.Printf("id: %d,url: 【%s】 --> 自动处理完成\n", item.ID, item.URL)
 			}
 		}
-		time.Sleep(300 * time.Second)
+		handleUrlTaskRunningLock.Unlock()
 	}
+
 }
 
+var handleSiteTaskRunningLock sync.Mutex
+
 func handleSite() {
-	for {
+	if handleSiteTaskRunningLock.TryLock() {
+		handleSiteTaskRunningLock.Lock()
 		var sites []db.SiteInfo
 		db.GetSiteInfoDB().Find(&sites) // 根据整型主键查找
 		for _, item := range sites {
@@ -60,6 +78,7 @@ func handleSite() {
 			go handle(&item)
 		}
 		time.Sleep(30 * time.Second)
+		handleUrlTaskRunningLock.Unlock()
 	}
 }
 
