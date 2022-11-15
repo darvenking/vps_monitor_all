@@ -5,11 +5,11 @@ server:
 
 
 database:
-  host: 127.0.0.1
+  host: localhost
   port: 5432
   dbname: monitor
   user: postgres
-  password: bgy123456
+  password: postgres
 
 # Redis 配置示例
 redis:

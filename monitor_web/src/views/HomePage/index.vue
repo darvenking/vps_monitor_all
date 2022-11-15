@@ -77,12 +77,12 @@
         <el-form-item label="购买链接" prop="url">
           <el-input v-model="form.url" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="商品名" prop="productName">
-          <el-input v-model="form.productName" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="价格" prop="price">
-          <el-input v-model="form.price" autocomplete="off"></el-input>
-        </el-form-item>
+<!--        <el-form-item label="商品名" prop="productName">-->
+<!--          <el-input v-model="form.productName" autocomplete="off"></el-input>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="价格" prop="price">-->
+<!--          <el-input v-model="form.price" autocomplete="off"></el-input>-->
+<!--        </el-form-item>-->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="()=>{dialogFormVisible = false}">取 消</el-button>
@@ -133,12 +133,12 @@ export default {
         url: [
           { required: true, message: '请填写购买地址', trigger: 'blur' },
         ],
-        price: [
-          { required: true, message: '请填写购买价格', trigger: 'blur' },
-        ],
-        productName: [
-          { required: true, message: '请填写商品名称', trigger: 'blur' },
-        ],
+        // price: [
+        //   { required: true, message: '请填写购买价格', trigger: 'blur' },
+        // ],
+        // productName: [
+        //   { required: true, message: '请填写商品名称', trigger: 'blur' },
+        // ],
       },
     };
   },
@@ -181,6 +181,11 @@ export default {
           price: '',
           productName: '',
         };
+        this.$notify({
+          type:"success",
+          title: "成功",
+          message: "提交成功，请等待审核",
+        })
         this.subLoading = false;
         this.subBtnName = '确 定';
         this.dialogFormVisible = false;

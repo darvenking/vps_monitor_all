@@ -6,6 +6,7 @@ import {ElementUiResolver} from 'unplugin-vue-components/resolvers'
 import path from 'path'
 
 export default (): UserConfigExport => {
+
   return {
     server: {
       host: true,
@@ -25,7 +26,10 @@ export default (): UserConfigExport => {
         targets: ['defaults', 'not ie < 9'],
       }),
       Components({
-        resolvers: [ElementUiResolver()],
+        resolvers: [ElementUiResolver({
+          importStyle: true,
+          }
+        )],
       }),
     ],
     build: {

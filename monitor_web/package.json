@@ -13,6 +13,7 @@
     "axios": "^0.27.2",
     "element-ui": "^2.15.10",
     "font-awesome": "^4.7.0",
+    "moment": "^2.29.4",
     "pinia": "^2.0.21",
     "vue": "^2.7.10",
     "vue-router": "^3.6.4"
@@ -37,6 +38,7 @@
     "unplugin-vue-components": "^0.22.4",
     "vite": "^3.0.7",
     "vite-plugin-mock": "^2.9.6",
+    "vite-plugin-style-import": "^2.0.0",
     "vue-eslint-parser": "^9.0.3",
     "vue-tsc": "^0.39.5"
   }
