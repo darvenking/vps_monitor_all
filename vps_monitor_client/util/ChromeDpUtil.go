@@ -43,7 +43,7 @@ func GetChromeCtx(focus bool) context.Context {
 			chromedp.DisableGPU,
 			chromedp.Flag("headless", false),
 			chromedp.Flag("blink-settings", "imagesEnabled=false"),
-			chromedp.UserAgent(`Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.55 Safari/537.36`),
+			chromedp.UserAgent(GetCfgStr("user-agent")),
 			chromedp.Flag("accept-language", `zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,zh-TW;q=0.6`),
 		)
 		var c context.Context

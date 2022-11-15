@@ -61,10 +61,17 @@ func handleSiteConfig() {
 				continue
 			}
 			siteInfo := &db.SiteInfo{
-				URL:   item.URL,
-				Price: document.Find(item.PriceFlag).Text(),
-				Name:  document.Find(item.NameFlag).Text(),
+				URL: item.URL,
 			}
+			PriceNode := document.Find(item.PriceFlag)
+			NameNode := document.Find(item.NameFlag)
+			if PriceNode != nil {
+				siteInfo.Price = PriceNode.Text()
+			}
+			if NameNode != nil {
+				siteInfo.Name = NameNode.Text()
+			}
+
 			//自动识别商家
 			u, err := url.Parse(item.URL)
 			if err != nil {
