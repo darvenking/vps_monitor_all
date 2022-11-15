@@ -44,15 +44,15 @@ func handleSiteConfig() {
 	}
 	defer handleUrlTaskRunningLock.Unlock()
 	var sites []db.SiteConfig
-	db.GetSiteConfigDB().Where("status = ?", 2).Find(&sites)
+	db.GetSiteConfigDB().Where("status = ?", 1).Find(&sites)
 	for _, item := range sites {
 		item := item
 		//更新为已处理
 		db.GetSiteConfigDB().Where("id = ?", item.ID).Update("status", 2)
 		//处理网站内容
 		if util.CheckUrl(item.URL) {
-			//html, err := util.GetWebHtml(item.URL, item.Cookies)
-			html, err := util.HttpGetWithHeader(item.URL, item.Cookies)
+			html, err := util.GetWebHtml(item.URL, item.Cookies)
+			//html, err := util.HttpGetWithHeader(item.URL, item.Cookies)
 			if err != nil {
 				continue
 			}
@@ -60,7 +60,7 @@ func handleSiteConfig() {
 			if err != nil {
 				continue
 			}
-			siteInfo := db.SiteInfo{
+			siteInfo := &db.SiteInfo{
 				URL:   item.URL,
 				Price: document.Find(item.PriceFlag).Text(),
 				Name:  document.Find(item.NameFlag).Text(),

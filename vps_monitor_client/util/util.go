@@ -32,14 +32,21 @@ func HttpGetWithHeader(url string, cookies string) (result string, err error) {
 		log.Println("err")
 	}
 	// 添加请求头
-	req.Header.Add("cookie", cookies)
+	if cookies != "" {
+		req.Header.Add("cookie", cookies)
+	}
 	req.Header.Add("user-agent", GetCfgStr("user-agent"))
 	// 发送请求
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Println("err")
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}(resp.Body)
 	b, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Println("err")
