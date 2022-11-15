@@ -3,6 +3,7 @@ module vps_monitor_client
 go 1.19
 
 require (
+	github.com/antchfx/htmlquery v1.2.5
 	github.com/chromedp/cdproto v0.0.0-20221108233440-fad8339618ab
 	github.com/chromedp/chromedp v0.8.6
 	github.com/fsnotify/fsnotify v1.6.0
@@ -13,9 +14,6 @@ require (
 )
 
 require (
-	github.com/PuerkitoBio/goquery v1.8.0 // indirect
-	github.com/andybalholm/cascadia v1.3.1 // indirect
-	github.com/antchfx/htmlquery v1.2.5 // indirect
 	github.com/antchfx/xpath v1.2.1 // indirect
 	github.com/chromedp/sysutil v1.0.0 // indirect
 	github.com/gobwas/httphead v0.1.0 // indirect
