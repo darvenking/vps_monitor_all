@@ -15,6 +15,13 @@ var (
 )
 
 func GetDB() *gorm.DB {
+
+	//host := util.GetCfgStr("database.host")
+	//user := util.GetCfgStr("database.user")
+	//password := util.GetCfgStr("database.password")
+	//dbname := util.GetCfgStr("database.dbname")
+	//port := util.GetCfgStr("database.port")
+
 	host := "localhost"
 	port := "5432"
 	//user := "uname"

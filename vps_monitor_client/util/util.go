@@ -2,6 +2,7 @@ package util
 
 import (
 	"io"
+	"log"
 	"net/http"
 	"strings"
 	"unsafe"
@@ -22,6 +23,29 @@ func Bytes2string(bytes []byte) string {
  */
 func CheckUrl(url string) bool {
 	return strings.HasPrefix(url, "http://") || strings.HasPrefix(url, "https://")
+}
+
+func HttpGetWithHeader(url string, cookies string) (result string, err error) {
+	client := http.Client{}
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		log.Println("err")
+	}
+	// 添加请求头
+	req.Header.Add("cookie", cookies)
+	req.Header.Add("user-agent", GetCfgStr("user-agent"))
+	// 发送请求
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Println("err")
+	}
+	defer resp.Body.Close()
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Println("err")
+	}
+	result = string(b)
+	return
 }
 
 func HttpGet(url string) (result string, err error) {

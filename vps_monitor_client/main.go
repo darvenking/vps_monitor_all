@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/PuerkitoBio/goquery"
 	"github.com/go-co-op/gocron"
 	"log"
 	"net/url"
@@ -14,16 +15,19 @@ import (
 
 func main() {
 
-	//timezone, _ := time.LoadLocation("Asia/Shanghai")
-	//s := gocron.NewScheduler(timezone)
-	schedule := gocron.NewScheduler(time.UTC)
+	timezone, _ := time.LoadLocation("Asia/Shanghai")
+	schedule := gocron.NewScheduler(timezone)
+	//schedule := gocron.NewScheduler(time.UTC)
 
-	// 每30秒执行一次
-	_, err := schedule.Every(30).Second().Do(func() {
+	// 默认每30秒执行一次
+	_, err1 := schedule.Every(5).Second().Do(func() {
 		go handleSiteConfig()
+	})
+	// 默认每30秒执行一次
+	_, err2 := schedule.Every(5).Second().Do(func() {
 		go crawlStock()
 	})
-	if err != nil {
+	if err1 != nil && err2 != nil {
 		log.Println("定时任务启动失败...")
 		return
 	}
@@ -35,9 +39,10 @@ var handleUrlTaskRunningLock sync.Mutex
 
 func handleSiteConfig() {
 	if !handleUrlTaskRunningLock.TryLock() {
+		log.Println("SiteConfig上一任务执行中，跳过当前定时任务...")
 		return
 	}
-	handleUrlTaskRunningLock.Lock()
+	defer handleUrlTaskRunningLock.Unlock()
 	var sites []db.SiteConfig
 	db.GetSiteConfigDB().Where("status = ?", 2).Find(&sites)
 	for _, item := range sites {
@@ -46,9 +51,19 @@ func handleSiteConfig() {
 		db.GetSiteConfigDB().Where("id = ?", item.ID).Update("status", 2)
 		//处理网站内容
 		if util.CheckUrl(item.URL) {
-			siteInfo, err := util.GetSiteInfo(&item)
+			//html, err := util.GetWebHtml(item.URL, item.Cookies)
+			html, err := util.HttpGetWithHeader(item.URL, item.Cookies)
 			if err != nil {
 				continue
+			}
+			document, err := goquery.NewDocumentFromReader(strings.NewReader(html))
+			if err != nil {
+				continue
+			}
+			siteInfo := db.SiteInfo{
+				URL:   item.URL,
+				Price: document.Find(item.PriceFlag).Text(),
+				Name:  document.Find(item.NameFlag).Text(),
 			}
 			//自动识别商家
 			u, err := url.Parse(item.URL)
@@ -68,7 +83,6 @@ func handleSiteConfig() {
 			log.Printf("id: %d,url: 【%s】 --> 自动处理完成\n", item.ID, item.URL)
 		}
 	}
-	handleUrlTaskRunningLock.Unlock()
 
 }
 
@@ -76,31 +90,33 @@ var handleSiteTaskRunningLock sync.Mutex
 
 func crawlStock() {
 	if !handleSiteTaskRunningLock.TryLock() {
+		log.Println("CrawlStock上一任务执行中，跳过当前定时任务...")
 		return
 	}
-	handleSiteTaskRunningLock.Lock()
 	var sites []db.SiteInfo
 	db.GetSiteInfoDB().Find(&sites) // 根据整型主键查找
 	for _, item := range sites {
 		item := item
 		go crawlStockHandle(&item)
 	}
-	time.Sleep(30 * time.Second)
 	handleSiteTaskRunningLock.Unlock()
 }
 
 func crawlStockHandle(siteInfo *db.SiteInfo) {
-	result, err := util.GetWebHtml(siteInfo.URL)
+	//result, err := util.GetWebHtml(siteInfo.URL, "")
+	var config db.SiteConfig
+	db.GetSiteConfigDB().First(&config, siteInfo.ConfigId)
+	html, err := util.HttpGetWithHeader(siteInfo.URL, config.Cookies)
 	if err != nil {
 		return
 	}
 	res := false
-	if siteInfo.NoStockFlag == "" {
-		a := strings.Contains(result, "缺货")
-		b := strings.Contains(result, "out of stock")
+	if config.NoStockFlag == "" {
+		a := strings.Contains(html, "缺货")
+		b := strings.Contains(html, "out of stock")
 		res = !a && !b
 	} else {
-		res = !strings.Contains(result, siteInfo.NoStockFlag)
+		res = !strings.Contains(html, config.NoStockFlag)
 	}
 	db.GetSiteInfoDB().Where("id = ?", siteInfo.ID).Update("stock", res)
 	fmt.Printf("%s更新完成:%s,结果：%t", time.Now().Format("2006-01-02 15:04:05"), siteInfo.URL, res)

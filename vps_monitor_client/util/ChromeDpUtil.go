@@ -2,43 +2,28 @@ package util
 
 import (
 	"context"
+	"github.com/chromedp/cdproto/network"
 	"github.com/chromedp/chromedp"
 	"log"
 	"net"
 	"time"
-	"vps_monitor_client/db"
 )
 
-func GetSiteInfo(item *db.SiteConfig) (*db.SiteInfo, error) {
+func GetWebHtml(url string, cookie string) (string, error) {
 	chromeCtx, cancel := context.WithTimeout(GetChromeCtx(false), 40*time.Second)
 	defer cancel()
-	//var htmlContent string
-	var name, price string
-	err := chromedp.Run(chromeCtx,
-		chromedp.Navigate(item.URL),
-		chromedp.TextContent(item.NameFlag, &name),
-		chromedp.TextContent(item.PriceFlag, &price),
-	)
-	if err != nil {
-		log.Printf("Run err : %v\n", err)
-		return nil, err
+	headers := network.Headers{}
+	if cookie != "" {
+		headers["cookie"] = cookie
 	}
-	d := &db.SiteInfo{
-		URL:         item.URL,
-		Name:        name,
-		Price:       price,
-		NoStockFlag: item.NoStockFlag,
-	}
-	return d, nil
-}
-
-func GetWebHtml(url string) (string, error) {
-	chromeCtx, cancel := context.WithTimeout(GetChromeCtx(false), 40*time.Second)
-	defer cancel()
 	var htmlContent string
 	err := chromedp.Run(chromeCtx,
-		chromedp.Navigate(url),
-		chromedp.OuterHTML(`/html/body`, &htmlContent),
+		chromedp.Tasks{
+			network.Enable(),
+			network.SetExtraHTTPHeaders(headers), //截取请求，额外增加header头,
+			chromedp.Navigate(url),
+			chromedp.OuterHTML(`/html/body`, &htmlContent),
+		},
 	)
 	if err != nil {
 		log.Printf("Run err : %v\n", err)
@@ -56,7 +41,7 @@ func GetChromeCtx(focus bool) context.Context {
 		allocOpts := chromedp.DefaultExecAllocatorOptions[:]
 		allocOpts = append(allocOpts,
 			chromedp.DisableGPU,
-			chromedp.Flag("headless", true),
+			chromedp.Flag("headless", false),
 			chromedp.Flag("blink-settings", "imagesEnabled=false"),
 			chromedp.UserAgent(`Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.55 Safari/537.36`),
 			chromedp.Flag("accept-language", `zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,zh-TW;q=0.6`),
