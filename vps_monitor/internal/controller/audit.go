@@ -20,7 +20,7 @@ func AuditList(r *ghttp.Request) {
 	if p.Status != 0 {
 		db.Where("status = ?", p.Status)
 	}
-	db.Limit(p.Size).Offset((p.Page - 1) * p.Size).Order("status asc,create_at desc").Find(&sub)
+	db.Limit(p.Size).Offset((p.Page - 1) * p.Size).Order("status asc,created_at desc").Find(&sub)
 	var count int64
 	db.Count(&count)
 	res.Success(r, g.Map{

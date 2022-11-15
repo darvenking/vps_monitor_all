@@ -27,7 +27,7 @@ type SellerInfo struct {
 }
 
 func GetSubmitSiteDB() *gorm.DB {
-	return DB.Model(&SiteConfig{})
+	return DB.Model(&SubmitSite{})
 }
 
 type SubmitSite struct {
