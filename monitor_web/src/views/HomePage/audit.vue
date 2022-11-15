@@ -1,9 +1,9 @@
 <template>
   <div class="home-page">
-    <template v-if="token === ''">
+    <template v-if="!loginStatus">
       <el-input v-model="token" placeholder="请输入token"
                 style="width: 200px;display: inline-block;margin-right: 10px"></el-input>
-      <el-button type="primary" @click="login">登录</el-button>
+      <el-button type="primary" @click="loginBtn">登录</el-button>
     </template>
     <template v-else>
       <div class="table-title">
@@ -17,7 +17,7 @@
               :value="item.value">
             </el-option>
           </el-select>
-          <el-button type="primary" @click="changeSell" :loading="loading" style="margin-left: 10px">{{
+          <el-button type="primary" @click="changeStatus" :loading="loading" style="margin-left: 10px">{{
               btnName
             }}
           </el-button>
@@ -68,11 +68,12 @@
           <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
-            :current-page.sync="currentPage2"
             :page-sizes="[20, 50, 100]"
+            :current-page.sync="page.page"
             :page-size="page.size"
+            :total="total"
             layout="sizes, prev, pager, next"
-            :total="total">
+          >
           </el-pagination>
         </template>
       </el-skeleton>
@@ -84,6 +85,7 @@ import { Audit, AuditList } from '@/apis/data.api';
 import userStore from '@/store/modules/app';
 import { useRoute } from '@/router';
 import { open_page } from '@/utils/util';
+import Notification from 'element-ui/lib/notification';
 
 export default {
   data() {
@@ -97,6 +99,7 @@ export default {
       useRoute,
       open_page,
       token: '',
+      loginStatus: false,
       id: undefined,
       total: 0,
       page: {
@@ -118,23 +121,37 @@ export default {
   },
   mounted() {
     this.token = localStorage.getItem('secret');
-    if (this.token) {
-      this.getAuditList();
+    if (!this.token) {
+      this.loginStatus = false;
     }
+    this.login = true;
+    this.getAuditList();
   },
   computed: {},
   methods: {
-    login() {
+    handleSizeChange(v) {
+      this.page.size = v;
+    },
+    handleCurrentChange(v) {
+      this.page.page = v;
+    },
+    loginBtn() {
       localStorage.setItem('secret', this.token);
+      this.loginStatus = true;
       this.getAuditList();
     },
     logout() {
+      this.loginStatus = false;
       this.token = '';
       localStorage.setItem('secret', this.token);
     },
     async getAuditList() {
       let res = await AuditList();
       if (res.code === 403) {
+        Notification.error({
+          title: '错误',
+          message: '未登录或授权码错误!',
+        });
         this.logout();
         return;
       }

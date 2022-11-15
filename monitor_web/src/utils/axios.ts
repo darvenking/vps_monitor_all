@@ -8,7 +8,7 @@ axios.defaults.baseURL = '/api'
 axios.defaults.timeout = 3000;
 // 配置公共请求头
 // @ts-ignore
-axios.defaults.headers.common['secret'] = localStorage.getItem('secret');
+axios.defaults.headers.common['secret'] = localStorage.getItem('secret').toString();
 //配置公共的post的Content-Type
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
