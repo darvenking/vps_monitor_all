@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/PuerkitoBio/goquery"
+	"github.com/antchfx/htmlquery"
 	"github.com/go-co-op/gocron"
 	"log"
 	"net/url"
+	"regexp"
 	"strings"
 	"sync"
 	"time"
@@ -25,7 +26,7 @@ func main() {
 	})
 	// 默认每30秒执行一次
 	_, err2 := schedule.Every(5).Second().Do(func() {
-		go crawlStock()
+		//go crawlStock()
 	})
 	if err1 != nil && err2 != nil {
 		log.Println("定时任务启动失败...")
@@ -56,20 +57,22 @@ func handleSiteConfig() {
 			if err != nil {
 				continue
 			}
-			document, err := goquery.NewDocumentFromReader(strings.NewReader(html))
+			document, err := htmlquery.Parse(strings.NewReader(html))
 			if err != nil {
 				continue
 			}
 			siteInfo := &db.SiteInfo{
 				URL: item.URL,
 			}
-			PriceNode := document.Find(item.PriceFlag)
-			NameNode := document.Find(item.NameFlag)
+			PriceNode := htmlquery.FindOne(document, item.PriceFlag)
+			NameNode := htmlquery.FindOne(document, item.NameFlag)
+			//匹配一个或多个空白符的正则表达式
+			reg := regexp.MustCompile("\\s+|\n")
 			if PriceNode != nil {
-				siteInfo.Price = PriceNode.Text()
+				siteInfo.Price = reg.ReplaceAllString(PriceNode.Data, "")
 			}
 			if NameNode != nil {
-				siteInfo.Name = NameNode.Text()
+				siteInfo.Name = reg.ReplaceAllString(NameNode.Data, "")
 			}
 
 			//自动识别商家
