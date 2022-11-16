@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"vps_monitor_client/util"
 )
 
 var (
@@ -16,21 +17,11 @@ var (
 
 func GetDB() *gorm.DB {
 
-	//host := util.GetCfgStr("database.host")
-	//user := util.GetCfgStr("database.user")
-	//password := util.GetCfgStr("database.password")
-	//dbname := util.GetCfgStr("database.dbname")
-	//port := util.GetCfgStr("database.port")
-
-	host := "localhost"
-	port := "5432"
-	//user := "uname"
-	//password := "zhenxun"
-	//dbname := "testdb"
-
-	user := "postgres"
-	password := "bgy123456"
-	dbname := "monitor"
+	host := util.GetCfgStr("database.host")
+	user := util.GetCfgStr("database.user")
+	password := util.GetCfgStr("database.password")
+	dbname := util.GetCfgStr("database.dbname")
+	port := util.GetCfgStr("database.port")
 
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Shanghai", host, user, password, dbname, port)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})

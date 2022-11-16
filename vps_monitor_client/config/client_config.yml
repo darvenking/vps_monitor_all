@@ -7,6 +7,6 @@ cron: 30
 database:
   host: 127.0.0.1
   port: 5432
-  dbname: monitor
-  user: postgres
-  password: bgy123456
+  dbname: vps
+  user: vps
+  password: vps123456
