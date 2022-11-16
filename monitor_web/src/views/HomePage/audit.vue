@@ -103,7 +103,7 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="()=>{dialogFormVisible = false}">取 消</el-button>
+          <el-button @click="cancel">取 消</el-button>
           <el-button type="primary" @click="submit" :loading="subLoading">{{ subBtnName }}</el-button>
         </div>
       </el-dialog>
@@ -188,6 +188,15 @@ export default {
         this.getAuditList();
       }, 10);
 
+    },
+    cancel(){
+      this.form = {
+        id: 0,
+        nameFlag: '',
+        priceFlag: '',
+        cookies: '',
+        noStockFlag: '',
+      }
     },
     logout() {
       this.loginStatus = false;
