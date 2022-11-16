@@ -115,10 +115,11 @@ func crawlStock() {
 }
 
 func crawlStockHandle(siteInfo *db.SiteInfo) {
-	//result, err := util.GetWebHtml(siteInfo.URL, "")
+
 	var config db.SiteConfig
 	db.GetSiteConfigDB().First(&config, siteInfo.ConfigId)
-	html, err := util.HttpGetWithHeader(siteInfo.URL, config.Cookies)
+	html, err := util.GetWebHtml(siteInfo.URL, config.Cookies)
+	//html, err := util.HttpGetWithHeader(siteInfo.URL, config.Cookies)
 	if err != nil {
 		return
 	}
