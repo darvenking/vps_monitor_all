@@ -182,9 +182,12 @@ export default {
       this.page.page = v;
     },
     loginBtn() {
-      localStorage.setItem('secret', this.token.toString());
+      localStorage.setItem('secret', this.token);
       this.loginStatus = true;
-      this.getAuditList();
+      setTimeout(() => {
+        this.getAuditList();
+      }, 10);
+
     },
     logout() {
       this.loginStatus = false;
@@ -195,6 +198,7 @@ export default {
       this.loading = true;
       this.btnName= '加载中';
       let res = await AuditList(this.page);
+      console.log(res)
       if (res.code === 403) {
         this.$notify({
           type:"error",

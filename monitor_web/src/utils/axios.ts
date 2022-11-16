@@ -7,8 +7,7 @@ axios.defaults.baseURL = '/api'
 // 配置超时时间
 axios.defaults.timeout = 3000;
 // 配置公共请求头
-// @ts-ignore
-axios.defaults.headers.common['secret'] = localStorage.getItem('secret') ? localStorage.getItem('secret').toString() : "";
+
 //配置公共的post的Content-Type
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
@@ -20,6 +19,8 @@ const instance = axios.create({
 // request拦截器
 instance.interceptors.request.use(
   (config) => {
+    // @ts-ignore
+    config.headers.secret = localStorage.getItem('secret')
     return config
   },
   (err) => {
