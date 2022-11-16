@@ -20,13 +20,15 @@ func main() {
 	schedule := gocron.NewScheduler(timezone)
 	//schedule := gocron.NewScheduler(time.UTC)
 
+	cfg := util.GetCfg("cron").(int)
+
 	// 默认每30秒执行一次
-	_, err1 := schedule.Every(5).Second().Do(func() {
+	_, err1 := schedule.Every(cfg).Second().Do(func() {
 		go handleSiteConfig()
 	})
 	// 默认每30秒执行一次
-	_, err2 := schedule.Every(5).Second().Do(func() {
-		//go crawlStock()
+	_, err2 := schedule.Every(cfg).Second().Do(func() {
+		go crawlStock()
 	})
 	if err1 != nil && err2 != nil {
 		log.Println("定时任务启动失败...")
