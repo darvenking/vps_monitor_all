@@ -190,6 +190,7 @@ export default {
 
     },
     cancel(){
+      this.dialogFormVisible = false;
       this.form = {
         id: 0,
         nameFlag: '',

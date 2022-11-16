@@ -41,7 +41,7 @@ func GetChromeCtx(focus bool) context.Context {
 		allocOpts := chromedp.DefaultExecAllocatorOptions[:]
 		allocOpts = append(allocOpts,
 			chromedp.DisableGPU,
-			chromedp.Flag("headless", false),
+			chromedp.Flag("headless", true),
 			chromedp.Flag("blink-settings", "imagesEnabled=false"),
 			chromedp.UserAgent(GetCfgStr("user-agent")),
 			chromedp.Flag("accept-language", `zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,zh-TW;q=0.6`),
