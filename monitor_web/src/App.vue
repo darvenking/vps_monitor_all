@@ -7,7 +7,7 @@
 <style lang="scss">
 html,
 body {
-  margin: 0;
+  margin: 0px;
   color: #323232;
 }
 </style>
